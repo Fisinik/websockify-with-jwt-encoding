@@ -1,6 +1,7 @@
 from __future__ import print_function
 import os
 import sys
+import jwt
 
 class BasePlugin(object):
     def __init__(self, src):
@@ -41,8 +42,9 @@ class ReadOnlyTokenFile(BasePlugin):
         if self._targets is None:
             self._load_targets()
 
-        if token in self._targets:
-            return self._targets[token]
+        token = jwt.decode(token, 'secret', algorithm='HS256')
+        if token['token'] in self._targets:
+            return self._targets[token['token']]
         else:
             return None
 
